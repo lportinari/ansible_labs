@@ -1,0 +1,46 @@
+---
+- hosts: all
+  become: yes
+
+  vars:
+    default_dir: /opt/custom
+    dict_dir: {
+      # Dicionário
+      scripts: "{{ default_dir }}/scripts",
+      backup: "{{ default_dir }}/backup",
+      log: "{{ default_dir }}/log",
+      temp: "{{ default_dir }}/temp" 
+    }
+
+  tasks:
+  - name: "Instala pacote vim"
+    apt:
+      update_cache: yes
+      name: "vim"
+      state: present
+    when: (ansible_facts['distribution'] == "Ubuntu")
+
+  - name: "Cria diretorio padrao"
+    file:
+      path: "{{ item }}"  # item loop
+      owner: suporte
+      group: suporte
+      state: directory
+    with_items:  # items loop
+    - "{{ dict_dir.scripts }}"
+    - "{{ dict_dir.backup }}"
+    - "{{ dict_dir.log }}"
+    - "{{ dict_dir.temp }}"
+
+  - name: "Cria arquivo simples"
+    file:
+      path: "{{ default_dir }}/teste.py"
+      state: touch
+      owner: root
+      mode: 755
+
+  - name: "Recursively find /tmp files older than 2 days"
+    find:
+      paths: "{{default_dir}}"
+      recurse: yes
+
