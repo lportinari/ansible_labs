@@ -37,10 +37,17 @@
       path: "{{ default_dir }}/teste.py"
       state: touch
       owner: root
-      mode: 755
+      mode: 0755
 
   - name: "Recursively find /tmp files older than 2 days"
     find:
       paths: "{{default_dir}}"
       recurse: yes
 
+  - name: "Exemplo de register"
+    shell: "date -u"
+    register: linux_date
+
+  - name: "Exibindos register"
+    debug:
+      msg: "{{ linux_date.stdout }}"
