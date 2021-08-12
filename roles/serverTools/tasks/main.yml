@@ -15,8 +15,6 @@
     state: latest
   when: (ansible_facts['os_family'] == "Debian")
 
----
-# tasks file for serverTools
 - name: 'Role: serverTools Softwares Uteis para administracao do servidor CentOS'
   yum:
     update_cache: yes  #Atualiza o packege list
@@ -30,5 +28,5 @@
       - python3
 
     state: latest
-  when: (ansible_facts['os_family'] == "Debian")
+  when: (ansible_facts['os_family'] == "RedHat")
 
