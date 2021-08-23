@@ -1,8 +1,14 @@
 ---
 # tasks file for serverTools
+- name: Set a hostname
+  hostname:
+    name: "{{ hostname }}"  
+  notify:  # Chamada do handler
+    - addInHostsFile
+
 - name: 'Role: serverTools Softwares Uteis para administracao do servidor Debian'
   apt:
-    update_cache: yes  #Atualiza o packege list
+    update_cache: yes  # Atualiza o packege list
     cache_valid_time: 3600  #1 hora
     name:
       - vim
@@ -29,4 +35,18 @@
 
     state: latest
   when: (ansible_facts['os_family'] == "RedHat")
+
+- name: "Permite trafego http no firewalld do centOS"
+  firewalld:
+    service: http
+    permanent: yes
+    state: enabled
+  when: (ansible_facts['os_family'] == "RedHat")
+
+- name: "Disable SELinux em sistemas derivados RedHat"
+  selinux:
+    state: disabled
+  when: (ansible_facts['os_family'] == "RedHat")
+  notify:
+  - Restart Server
 
